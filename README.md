@@ -1,96 +1,54 @@
-#android-orm-benchmark
+# android-orm-benchmark
 
-##Summary
+## Summary
 
-ORM-Benchmark is an Android application built in Eclipse that benchmarks the following against each other:
+ORM-Benchmark is an Android application built in Android Studio that benchmarks the following against each other:
 
+- [Android Raw SQLite](http://developer.android.com/guide/topics/data/data-storage.html#db)
+- [Android SQLite API Optimized]
 - [ORMLite](http://ormlite.com/)
-- [GreenDAO](http://greendao-orm.com/)
-- [Android raw SQLite](http://developer.android.com/guide/topics/data/data-storage.html#db)
+- [GreenDAO v2 & v3](https://github.com/greenrobot/greenDAO)
+- [Room Persistence Library](https://developer.android.com/topic/libraries/architecture/room.html)
 
 The benchmark runs the following tasks:
 
-- CREATE_DB - Creation of database structure
+- CREATE_TABLE - Creation of database structure
 - WRITE_DATA - Writing 1000 'user' objects and 10000 'message' objects
 - READ_DATA - Read all 10000 'message' objects in the table
 - READ_INDEXED - Read an indexed field (the 5000th 'message' in the table)
 - READ_SEARCH - Query the first 100 rows that matches a search term (using LIKE)
-- DROP_DB - Drop database strucuture
+- DROP_TABLE - Drop database strucuture
 
-Each task is run 5 times, and the application reports the average time for each in milliseconds.
+Each task is run 50 times, and the application reports the average time for each in milliseconds.
 
-##Sample Output
+## Results
 
 Building and running the ORM-Benchmark project produces output similar to that below. 
 
 - The times are in milliseconds.
 - The results are shown on the device and are also logged to Logcat.  
 
-The results below combine the in-memory database results with the on disk database results side by side.  They are from a Nexus 4 on 20th Dec 2013, and we've put an "M" in front of the tests for the in-memory results.
+The results below combine the in-memory database results with the on disk database results side by side. They are from a Nexus 6 Android 7.1.1.
 
-<pre>
-Task CREATE_DB
-M RAW - Avg: 4
-RAW - Avg: 230
+- CREATE_TABLE
+![create_table](results/create_table.png)
 
-M ORMLite - Avg: 6
-ORMLite - Avg: 233
+- WRITE_DATA
+![write](results/write.png)
 
-M GreenDAO - Avg: 3
-GreenDAO - Avg: 163
+- READ_DATA
+![read](results/read.png)
 
-Task WRITE_DATA
-M RAW - Avg: 2925
-RAW - Avg: 3281
+- READ_INDEXED
+![read_indexed](results/read_indexed.png)
 
-M ORMLite - Avg: 6898
-ORMLite - Avg: 7203
+- READ_SEARCH
+![search](results/search.png)
 
-M GreenDAO - Avg: 1960
-GreenDAO - Avg: 2470
+- DROP_TABLE
+![drop_table](results/drop_table.png)
 
-Task READ_DATA
-M RAW - Avg: 803
-RAW - Avg: 808
-
-M ORMLite - Avg: 1656
-ORMLite - Avg: 1729
-
-M GreenDAO - Avg: 1183
-GreenDAO - Avg: 1186
-
-Task READ_INDEXED
-M RAW - Avg: 1
-RAW - Avg: 1
-
-M ORMLite - Avg: 2
-ORMLite - Avg: 3
-
-M GreenDAO - Avg: 1
-GreenDAO - Avg: 1
-
-Task READ_SEARCH
-M RAW - Avg: 8
-RAW - Avg: 8
-
-M ORMLite - Avg: 119
-ORMLite - Avg: 156
-
-M GreenDAO - Avg: 7
-GreenDAO - Avg: 6
-
-Task DROP_DB
-M RAW - Avg: 8
-RAW - Avg: 515
-
-M ORMLite - Avg: 10
-ORMLite - Avg: 558
-
-M GreenDAO - Avg: 8
-GreenDAO - Avg: 369
-</pre>
-
-##Screenshots
+## Screenshots
 
 ![main](/screenshots/main.png?raw=true "Main screen")
 
@@ -98,8 +56,8 @@ After pressing "Run Benchmark" you can press "Show Results" to see the results:
 
 ![results](/screenshots/results.png?raw=true "Results")
 
-##Technical Reference
-###Customizing Benchmark Tests
+## Technical Reference
+### Customizing Benchmark Tests
 
 - Enable/disable the usage of [in-memory](https://www.sqlite.org/inmemorydb.html) SQLite databases. Check [MainActivity#USE_IN_MEMORY_DB](/ORM-Benchmark/src/main/java/com/littleinc/orm_benchmark/MainActivity.java#L38)
 - Number of times to run the tests. Check [MainActivity#NUM_ITERATIONS](/ORM-Benchmark/src/main/java/com/littleinc/orm_benchmark/MainActivity.java#L40)
@@ -111,7 +69,6 @@ After pressing "Run Benchmark" you can press "Show Results" to see the results:
 - Number of messages with readers. Check [BenchmarkExecutable#NUM_MESSAGES_WITH_READERS](/ORM-Benchmark/src/main/java/com/littleinc/orm_benchmark/BenchmarkExecutable.java#L19)
 - Number of reades on messages. Check [BenchmarkExecutable#NUM_READERS](/ORM-Benchmark/src/main/java/com/littleinc/orm_benchmark/BenchmarkExecutable.java#L13)
 
-###Changing The GreenDao Tests 
+### Changing The GreenDao v2 Tests 
 
-GreenDao requires a separate project to generate the source code for database entities and DAOs.  The ORM-Benchmark-GreenDAO-Generator project is a Java application that you can run to regenerate the database definitions.  You only need to do this if you want to change the GreenDao database model! 
-
+GreenDao v2 requires a separate project to generate the source code for database entities and DAOs. The ORM-Benchmark-GreenDAO-Generator project is a Java application that you can run to regenerate the database definitions. You only need to do this if you want to change the GreenDao database model!
