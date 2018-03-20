@@ -29,7 +29,6 @@ public class RoomExecutor implements BenchmarkExecutable {
     @Override
     public void init(Context context, boolean useInMemoryDb) {
         db = RoomDatabase.getInstance(context, useInMemoryDb);
-        db.dropTable();
     }
 
     @Override

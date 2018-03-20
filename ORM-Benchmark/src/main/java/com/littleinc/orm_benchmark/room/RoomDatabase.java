@@ -14,6 +14,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 
 @Database(entities = {RoomMessage.class, RoomUser.class}, version = 1)
 public abstract class RoomDatabase extends android.arch.persistence.room.RoomDatabase {
@@ -57,13 +58,29 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
         final Context appContext = context.getApplicationContext();
         sInMemoryInstance = Room.inMemoryDatabaseBuilder(appContext, RoomDatabase.class)
                 .allowMainThreadQueries()
+                .addCallback(new Callback() {
+                    @Override
+                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                        super.onOpen(db);
+                        db.execSQL("DROP TABLE user");
+                        db.execSQL("DROP TABLE message");
+                    }
+                })
                 .build();
     }
 
     private static void initDisk(Context context) {
         final Context appContext = context.getApplicationContext();
-        sInMemoryInstance = Room.databaseBuilder(appContext, RoomDatabase.class, "room")
+        sDiskInstance = Room.databaseBuilder(appContext, RoomDatabase.class, "room")
                 .allowMainThreadQueries()
+                .addCallback(new Callback() {
+                    @Override
+                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                        super.onOpen(db);
+                        db.execSQL("DROP TABLE user");
+                        db.execSQL("DROP TABLE message");
+                    }
+                })
                 .build();
     }
 
