@@ -5,7 +5,7 @@
 ORM-Benchmark is an Android application built in Android Studio that benchmarks the following against each other:
 
 - [Android Raw SQLite](http://developer.android.com/guide/topics/data/data-storage.html#db)
-- [Android SQLite API Optimized]
+- Android SQLite API Optimization
 - [ORMLite](http://ormlite.com/)
 - [GreenDAO v2 & v3](https://github.com/greenrobot/greenDAO)
 - [Room Persistence Library](https://developer.android.com/topic/libraries/architecture/room.html)
@@ -26,9 +26,9 @@ Each task is run 50 times, and the application reports the average time for each
 Building and running the ORM-Benchmark project produces output similar to that below. 
 
 - The times are in milliseconds.
-- The results are shown on the device and are also logged to Logcat.  
+- The results are shown on the device and are also logged to Logcat.  
 
-The results below combine the in-memory database results with the on disk database results side by side. They are from a Nexus 6 Android 7.1.1.
+The results below combine the in-memory database results with the on disk database results side by side. **But this comparison may be invalid because of SQLite pages cache**. They are from a Nexus 6 Android 7.1.1.
 
 - CREATE_TABLE
 ![create_table](results/create_table.png)
