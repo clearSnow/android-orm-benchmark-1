@@ -56,6 +56,8 @@ public class OptimizedSQLiteExecutor implements BenchmarkExecutable {
     public void init(Context context, boolean useInMemoryDb) {
         Log.d(TAG, "Creating DataBaseHelper");
         mHelper = new DataBaseHelper(context, useInMemoryDb);
+        mHelper.getWritableDatabase().execSQL("DROP TABLE IF EXISTS \"user\"");
+        mHelper.getWritableDatabase().execSQL("DROP TABLE IF EXISTS \"message\"");
     }
 
     @Override
