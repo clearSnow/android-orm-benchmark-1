@@ -1,60 +1,59 @@
 package com.littleinc.orm_benchmark.greendao;
 
-import static com.littleinc.orm_benchmark.util.Util.getRandomString;
-
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.littleinc.orm_benchmark.BenchmarkExecutable;
 import com.littleinc.orm_benchmark.greendao.MessageDao.Properties;
 import com.littleinc.orm_benchmark.util.Util;
 
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.littleinc.orm_benchmark.util.Util.getRandomString;
+
 public class GreenDaoExecutor implements BenchmarkExecutable {
 
     private static final String TAG = "GreenDaoExecutor";
 
-    private static String DB_NAME = "greendao_db";
-
-    private DataBaseHelper mHelper;
+    private static final String DB_NAME = "greendao_db";
 
     private DaoMaster mDaoMaster;
+    private DaoSession mSession;
 
     @Override
     public void init(Context context, boolean useInMemoryDb) {
         Log.d(TAG, "Creating DataBaseHelper");
-        mHelper = new DataBaseHelper(context, (useInMemoryDb ? null : DB_NAME),
-                null);
+        SQLiteOpenHelper helper = new DataBaseHelper(context, (useInMemoryDb ? null : DB_NAME), null);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        DaoMaster.dropAllTables(db, true);
+        mDaoMaster = new DaoMaster(db);
+        mSession = mDaoMaster.newSession();
     }
 
     @Override
     public long createDbStructure() throws SQLException {
         long start = System.nanoTime();
-        if (mDaoMaster == null) {
-            mDaoMaster = new DaoMaster(mHelper.getWritableDatabase());
-        } else {
-            DaoMaster.createAllTables(mHelper.getWritableDatabase(), true);
-        }
+        DaoMaster.createAllTables(mDaoMaster.getDatabase(), true);
         return System.nanoTime() - start;
     }
 
     @Override
     public long writeWholeData() throws SQLException {
-        final List<User> users = new LinkedList<User>();
+        final List<User> users = new LinkedList<>();
         for (int i = 0; i < NUM_USER_INSERTS; i++) {
-            User newUser = new User(getRandomString(10), getRandomString(10),
-                    null);
+            User newUser = new User(getRandomString(10), getRandomString(10), null);
             users.add(newUser);
         }
 
-        final List<Message> messages = new LinkedList<Message>();
+        final List<Message> messages = new LinkedList<>();
         for (long i = 0; i < NUM_MESSAGE_INSERTS; i++) {
             Message newMessage = new Message(null);
             newMessage.setCommand_id(i);
-            newMessage.setSorted_by(Double.valueOf(System.nanoTime()));
+            newMessage.setSorted_by((double) System.nanoTime());
             newMessage.setContent(Util.getRandomString(100));
             newMessage.setClient_id(System.currentTimeMillis());
             newMessage.setSender_id(Math.round(Math.random() * NUM_USER_INSERTS));
@@ -65,25 +64,24 @@ public class GreenDaoExecutor implements BenchmarkExecutable {
         }
 
         long start = System.nanoTime();
-        final DaoSession daoSession = mDaoMaster.newSession();
-        daoSession.runInTx(new Runnable() {
+        mSession.runInTx(new Runnable() {
 
             @Override
             public void run() {
-                UserDao userDao = daoSession.getUserDao();
+                UserDao userDao = mSession.getUserDao();
                 for (User user : users) {
                     userDao.insertOrReplace(user);
                 }
                 Log.d(GreenDaoExecutor.class.getSimpleName(), "Done, wrote "
                         + NUM_USER_INSERTS + " users");
 
-                MessageDao messageDao = daoSession.getMessageDao();
+                MessageDao messageDao = mSession.getMessageDao();
                 for (Message message : messages) {
                     messageDao.insertOrReplace(message);
                 }
                 Log.d(GreenDaoExecutor.class.getSimpleName(), "Done, wrote "
                         + NUM_MESSAGE_INSERTS + " messages");
-                daoSession.clear();
+                mSession.clear();
             }
         });
         return System.nanoTime() - start;
@@ -92,51 +90,48 @@ public class GreenDaoExecutor implements BenchmarkExecutable {
     @Override
     public long readWholeData() throws SQLException {
         long start = System.nanoTime();
-        DaoSession daoSession = mDaoMaster.newSession();
-        MessageDao messageDao = daoSession.getMessageDao();
+        MessageDao messageDao = mSession.getMessageDao();
         Log.d(GreenDaoExecutor.class.getSimpleName(), "Read, "
                 + messageDao.queryBuilder().list().size() + " rows");
-        daoSession.clear();
+        mSession.clear();
         return System.nanoTime() - start;
     }
 
     @Override
     public long readIndexedField() throws SQLException {
         long start = System.nanoTime();
-        DaoSession daoSession = mDaoMaster.newSession();
-        MessageDao messageDao = daoSession.getMessageDao();
+        MessageDao messageDao = mSession.getMessageDao();
         Log.d(GreenDaoExecutor.class.getSimpleName(),
                 "Read, "
                         + messageDao
-                                .queryBuilder()
-                                .where(Properties.Command_id
-                                        .eq(LOOK_BY_INDEXED_FIELD)).list()
-                                .size() + " rows");
-        daoSession.clear();
+                        .queryBuilder()
+                        .where(Properties.Command_id
+                                .eq(LOOK_BY_INDEXED_FIELD)).list()
+                        .size() + " rows");
+        mSession.clear();
         return System.nanoTime() - start;
     }
 
     @Override
     public long readSearch() throws SQLException {
         long start = System.nanoTime();
-        DaoSession daoSession = mDaoMaster.newSession();
-        MessageDao messageDao = daoSession.getMessageDao();
+        MessageDao messageDao = mSession.getMessageDao();
         Log.d(GreenDaoExecutor.class.getSimpleName(),
                 "Read, "
                         + messageDao
-                                .queryBuilder()
-                                .limit((int) SEARCH_LIMIT)
-                                .where(Properties.Content.like("%"
-                                        + SEARCH_TERM + "%")).list().size()
+                        .queryBuilder()
+                        .limit((int) SEARCH_LIMIT)
+                        .where(Properties.Content.like("%"
+                                + SEARCH_TERM + "%")).list().size()
                         + " rows");
-        daoSession.clear();
+        mSession.clear();
         return System.nanoTime() - start;
     }
 
     @Override
     public long dropDb() throws SQLException {
         long start = System.nanoTime();
-        DaoMaster.dropAllTables(mHelper.getWritableDatabase(), true);
+        DaoMaster.dropAllTables(mDaoMaster.getDatabase(), true);
         return System.nanoTime() - start;
     }
 

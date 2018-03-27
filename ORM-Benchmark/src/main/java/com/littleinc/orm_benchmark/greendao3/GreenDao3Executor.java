@@ -50,7 +50,7 @@ public class GreenDao3Executor implements BenchmarkExecutable {
 
     @Override
     public long writeWholeData() throws SQLException {
-        final List<User> users = new LinkedList<User>();
+        final List<User> users = new LinkedList<>();
         for (int i = 0; i < NUM_USER_INSERTS; i++) {
             User newUser = new User();
             newUser.setFirstName(getRandomString(10));
@@ -58,7 +58,7 @@ public class GreenDao3Executor implements BenchmarkExecutable {
             users.add(newUser);
         }
 
-        final List<Message> messages = new LinkedList<Message>();
+        final List<Message> messages = new LinkedList<>();
         for (long i = 0; i < NUM_MESSAGE_INSERTS; i++) {
             Message newMessage = new Message();
             newMessage.setCommandId(i);
@@ -73,19 +73,18 @@ public class GreenDao3Executor implements BenchmarkExecutable {
         }
 
         long start = System.nanoTime();
-        final DaoSession daoSession = mSession;
-        daoSession.runInTx(new Runnable() {
+        mSession.runInTx(new Runnable() {
 
             @Override
             public void run() {
-                UserDao userDao = daoSession.getUserDao();
+                UserDao userDao = mSession.getUserDao();
                 for (User user : users) {
                     userDao.insertOrReplace(user);
                 }
                 Log.d(GreenDao3Executor.class.getSimpleName(), "Done, wrote "
                         + NUM_USER_INSERTS + " users");
 
-                MessageDao messageDao = daoSession.getMessageDao();
+                MessageDao messageDao = mSession.getMessageDao();
                 for (int i = 0, size = messages.size(); i < size; i++) {
                     Message message = messages.get(i);
                     message.setId(i + 1);
@@ -93,7 +92,7 @@ public class GreenDao3Executor implements BenchmarkExecutable {
                 }
                 Log.d(GreenDao3Executor.class.getSimpleName(), "Done, wrote "
                         + NUM_MESSAGE_INSERTS + " messages");
-                daoSession.clear();
+                mSession.clear();
             }
         });
         return System.nanoTime() - start;
@@ -102,19 +101,17 @@ public class GreenDao3Executor implements BenchmarkExecutable {
     @Override
     public long readWholeData() throws SQLException {
         long start = System.nanoTime();
-        DaoSession daoSession = mSession;
-        MessageDao messageDao = daoSession.getMessageDao();
+        MessageDao messageDao = mSession.getMessageDao();
         Log.d(GreenDao3Executor.class.getSimpleName(), "ReadWhole, "
                 + messageDao.loadAll().size() + " rows");
-        daoSession.clear();
+        mSession.clear();
         return System.nanoTime() - start;
     }
 
     @Override
     public long readIndexedField() throws SQLException {
         long start = System.nanoTime();
-        DaoSession daoSession = mSession;
-        MessageDao messageDao = daoSession.getMessageDao();
+        MessageDao messageDao = mSession.getMessageDao();
         Log.d(GreenDao3Executor.class.getSimpleName(),
                 "Read, "
                         + messageDao
@@ -122,15 +119,14 @@ public class GreenDao3Executor implements BenchmarkExecutable {
                         .where(MessageDao.Properties.CommandId
                                 .eq(LOOK_BY_INDEXED_FIELD)).list()
                         .size() + " rows");
-        daoSession.clear();
+        mSession.clear();
         return System.nanoTime() - start;
     }
 
     @Override
     public long readSearch() throws SQLException {
         long start = System.nanoTime();
-        DaoSession daoSession = mSession;
-        MessageDao messageDao = daoSession.getMessageDao();
+        MessageDao messageDao = mSession.getMessageDao();
         Log.d(GreenDao3Executor.class.getSimpleName(),
                 "Read, "
                         + messageDao
@@ -139,7 +135,7 @@ public class GreenDao3Executor implements BenchmarkExecutable {
                         .where(MessageDao.Properties.Content.like("%"
                                 + SEARCH_TERM + "%")).list().size()
                         + " rows");
-        daoSession.clear();
+        mSession.clear();
         return System.nanoTime() - start;
     }
 
