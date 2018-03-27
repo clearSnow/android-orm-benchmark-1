@@ -60,10 +60,10 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
                 .allowMainThreadQueries()
                 .addCallback(new Callback() {
                     @Override
-                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onOpen(db);
-                        db.execSQL("DROP TABLE user");
-                        db.execSQL("DROP TABLE message");
+                        db.execSQL("DROP TABLE IF EXISTS user");
+                        db.execSQL("DROP TABLE IF EXISTS message");
                     }
                 })
                 .build();
@@ -75,10 +75,10 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
                 .allowMainThreadQueries()
                 .addCallback(new Callback() {
                     @Override
-                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onOpen(db);
-                        db.execSQL("DROP TABLE user");
-                        db.execSQL("DROP TABLE message");
+                        db.execSQL("DROP TABLE IF EXISTS user");
+                        db.execSQL("DROP TABLE IF EXISTS message");
                     }
                 })
                 .build();
