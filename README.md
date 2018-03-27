@@ -23,12 +23,12 @@ Each task is run 50 times, and the application reports the average time for each
 
 ## Results
 
-Building and running the ORM-Benchmark project produces output similar to that below. 
+Building and running the ORM-Benchmark project produces output similar to that below.
 
 - The times are in milliseconds.
 - The results are shown on the device and are also logged to Logcat.  
 
-The results below combine the in-memory database results with the on disk database results side by side. **But this comparison may be invalid because of SQLite pages cache**. They are from a Nexus 6 Android 7.1.1.
+The results below combine the in-memory database results with the on disk database results side by side. They are from a Nexus 6 Android 7.1.1.
 
 - CREATE_TABLE
 ![create_table](results/create_table.png)
@@ -37,13 +37,13 @@ The results below combine the in-memory database results with the on disk databa
 ![write](results/write.png)
 
 - READ_DATA
-![read](results/read.png)
+![read](results/query_all.png)
 
 - READ_INDEXED
-![read_indexed](results/read_indexed.png)
+![read_indexed](results/query_by_indexed.png)
 
 - READ_SEARCH
-![search](results/search.png)
+![search](results/query_with_where_clause.png)
 
 - DROP_TABLE
 ![drop_table](results/drop_table.png)
@@ -69,6 +69,6 @@ After pressing "Run Benchmark" you can press "Show Results" to see the results:
 - Number of messages with readers. Check [BenchmarkExecutable#NUM_MESSAGES_WITH_READERS](/ORM-Benchmark/src/main/java/com/littleinc/orm_benchmark/BenchmarkExecutable.java#L19)
 - Number of reades on messages. Check [BenchmarkExecutable#NUM_READERS](/ORM-Benchmark/src/main/java/com/littleinc/orm_benchmark/BenchmarkExecutable.java#L13)
 
-### Changing The GreenDao v2 Tests 
+### Changing The GreenDao v2 Tests
 
 GreenDao v2 requires a separate project to generate the source code for database entities and DAOs. The ORM-Benchmark-GreenDAO-Generator project is a Java application that you can run to regenerate the database definitions. You only need to do this if you want to change the GreenDao database model!
