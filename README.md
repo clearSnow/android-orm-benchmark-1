@@ -28,7 +28,7 @@ Building and running the ORM-Benchmark project produces output similar to that b
 - The times are in milliseconds.
 - The results are shown on the device and are also logged to Logcat.  
 
-The results below combine the in-memory database results with the on disk database results side by side. They are from a Nexus 6 Android 7.1.1.
+The results below combine the in-memory database results with the on disk database results side by side. They are from a HUAWEI Mate 10 Android 8.0.
 
 - CREATE_TABLE
 ![create_table](results/create_table.png)
@@ -48,13 +48,15 @@ The results below combine the in-memory database results with the on disk databa
 - DROP_TABLE
 ![drop_table](results/drop_table.png)
 
+The query results of GreenDao may be slower than your testing. It is the normal phenomenon becuase I had cleared all objects cache in the end of every test case. If the objects cache did not be cleared, the speed can be about 2 to 3 times faster than the results showing in the charts. However, this improvement will be lower as the size of data being larger becuase of the memory limitation.
+
 ## Screenshots
 
-![main](/screenshots/main.png?raw=true "Main screen")
+![main](screenshots/main.png?raw=true "Main screen")
 
 After pressing "Run Benchmark" you can press "Show Results" to see the results:
 
-![results](/screenshots/results.png?raw=true "Results")
+![results](screenshots/results.png?raw=true "Results")
 
 ## Technical Reference
 ### Customizing Benchmark Tests
