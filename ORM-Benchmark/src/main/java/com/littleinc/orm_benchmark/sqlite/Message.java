@@ -53,7 +53,7 @@ public class Message {
     public static void createTable(SQLiteOpenHelper helper) {
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        db.execSQL(new StringBuilder("CREATE TABLE '").append(TABLE_NAME)
+        db.execSQL(new StringBuilder("CREATE TABLE IF NOT EXISTS '").append(TABLE_NAME)
                 .append("' ('").append(BaseColumns._ID)
                 .append("' INTEGER PRIMARY KEY AUTOINCREMENT, '")
                 .append(CLIENT_ID).append("' INTEGER, '").append(SORTED_BY)
@@ -63,7 +63,7 @@ public class Message {
                 .append("' INTEGER NOT NULL, '").append(COMMAND_ID)
                 .append("' INTEGER);").toString());
 
-        db.execSQL(new StringBuilder("CREATE INDEX IDX_MESSAGE_COMMAND_ID ON ")
+        db.execSQL(new StringBuilder("CREATE INDEX IF NOT EXISTS IDX_MESSAGE_COMMAND_ID ON ")
                 .append(TABLE_NAME).append(" (").append(COMMAND_ID)
                 .append(");").toString());
     }

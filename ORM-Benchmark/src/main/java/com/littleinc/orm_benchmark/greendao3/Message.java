@@ -22,20 +22,20 @@ import org.greenrobot.greendao.annotation.Generated;
 public class Message {
     @Id(autoincrement = true)
     @Property(nameInDb = "_id")
-    public long id;
+    public Long id;
 
     @Property(nameInDb = "client_id")
-    public long clientId;
+    public Long clientId;
 
     @Index
     @Property(nameInDb = "command_id")
-    public long commandId;
+    public Long commandId;
 
     @Property(nameInDb = "sorted_by")
-    public double sortedBy;
+    public Double sortedBy;
 
     @Property(nameInDb = "created_at")
-    public int createdAt;
+    public Integer createdAt;
 
     public String content;
 
@@ -48,9 +48,14 @@ public class Message {
     @Transient
     public List<User> readers;
 
-    @Generated(hash = 2069970248)
-    public Message(long id, long clientId, long commandId, double sortedBy,
-            int createdAt, String content, long senderId, long channelId) {
+    @Override
+    public String toString() {
+        return id + ", " + content;
+    }
+
+    @Generated(hash = 1988887747)
+    public Message(Long id, Long clientId, Long commandId, Double sortedBy,
+            Integer createdAt, String content, long senderId, long channelId) {
         this.id = id;
         this.clientId = clientId;
         this.commandId = commandId;
@@ -65,7 +70,7 @@ public class Message {
     public Message() {
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
@@ -127,6 +132,26 @@ public class Message {
 
     public void setChannelId(long channelId) {
         this.channelId = channelId;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
+    }
+
+    public void setCommandId(Long commandId) {
+        this.commandId = commandId;
+    }
+
+    public void setSortedBy(Double sortedBy) {
+        this.sortedBy = sortedBy;
+    }
+
+    public void setCreatedAt(Integer createdAt) {
+        this.createdAt = createdAt;
     }
 
 }

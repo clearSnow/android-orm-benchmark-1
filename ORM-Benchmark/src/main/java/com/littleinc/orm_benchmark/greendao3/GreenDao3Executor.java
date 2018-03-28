@@ -85,10 +85,8 @@ public class GreenDao3Executor implements BenchmarkExecutable {
                         + NUM_USER_INSERTS + " users");
 
                 MessageDao messageDao = mSession.getMessageDao();
-                for (int i = 0, size = messages.size(); i < size; i++) {
-                    Message message = messages.get(i);
-                    message.setId(i + 1);
-                    messageDao.insertOrReplace(message);
+                for (Message message : messages) {
+                    messageDao.insert(message);
                 }
                 Log.d(GreenDao3Executor.class.getSimpleName(), "Done, wrote "
                         + NUM_MESSAGE_INSERTS + " messages");

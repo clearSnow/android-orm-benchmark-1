@@ -23,7 +23,7 @@ public class User {
 
     public static void createTable(SQLiteOpenHelper helper) {
         helper.getWritableDatabase().execSQL(
-                new StringBuilder("CREATE TABLE '").append(TABLE_NAME)
+                new StringBuilder("CREATE TABLE IF NOT EXISTS '").append(TABLE_NAME)
                         .append("' ('").append(BaseColumns._ID)
                         .append("' INTEGER PRIMARY KEY AUTOINCREMENT, '")
                         .append(LAST_NAME_COLUMN).append("' TEXT, '")
